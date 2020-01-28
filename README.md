@@ -1,6 +1,6 @@
 # Easy distributed hyperopt
 
-The code in example.py allows you to run distributed
+The code in ![example.py](https://github.com/MilesCranmer/easy_distributed_hyperopt/blob/master/example.py) allows you to run distributed
 hyperopt with only a shared folder: all trials
 will be stored and shared between nodes using that folder.
 
