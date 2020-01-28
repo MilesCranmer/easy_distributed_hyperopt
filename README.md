@@ -14,4 +14,5 @@ folder should be accessible from all your nodes.
 optimization function and hyperparameters to optimize over.
 3. Then, run example.py on all your nodes.
 4. Kill the script when you want to stop.
-5. All the trials are stored in separate .pkl files in the folder.
+5. Set the foldername in print_best_model.py and then run it.
+
