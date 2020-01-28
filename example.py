@@ -13,7 +13,7 @@ TRIALS_FOLDER = 'trials'
 NUMBER_TRIALS_PER_RUN = 1
 
 def run_trial(args):
-    """Run a training iteration based on args.
+    """Evaluate the model loss using the hyperparams in args
 
     :args: A dictionary containing all hyperparameters
     :returns: Dict with status and loss from cross-validation
