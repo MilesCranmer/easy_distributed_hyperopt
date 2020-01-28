@@ -1,4 +1,4 @@
-# Easy hyperopt
+# Easy distributed hyperopt
 
 The code in example.py allows you to run distributed
 hyperopt with only a shared folder: all trials
