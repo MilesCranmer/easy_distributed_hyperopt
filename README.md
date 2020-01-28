@@ -7,7 +7,7 @@ will be stored and shared between nodes using that folder.
 No head node, no distributed frameworks. Just a shared
 folder.
 
-To use, 
+## To use, 
 1. Create an empty folder to store all the trial scores. The
 folder should be accessible from all your nodes.
 2. Fill in example.py with the foldername, your desired
