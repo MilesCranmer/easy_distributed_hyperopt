@@ -1,6 +1,8 @@
 """Start a hyperoptimization from a single node"""
+import sys
 import numpy as np
 import pickle as pkl
+import hyperopt
 from hyperopt import hp, fmin, tpe, Trials
 
 
@@ -14,14 +16,17 @@ def run_trial(args):
     """Run a training iteration based on args.
 
     :args: A dictionary containing all hyperparameters
-    :returns: Average loss from cross-validation
+    :returns: Dict with status and loss from cross-validation
 
     """
 
-    #TODO: Fill this in.
+    #TODO: Fill this in with a call to your file
     ...
 
-    return cross_validation_test_loss
+    return {
+        'status': 'ok', # or 'fail' if nan loss
+        'loss': loss
+    }
 
 
 #TODO: Declare your hyperparameter priors here:
@@ -79,39 +84,45 @@ while True:
     # Load up all runs:
     import glob
     path = TRIALS_FOLDER + '/*.pkl'
-    files = 0
     for fname in glob.glob(path):
         if fname in loaded_fnames:
             continue
 
-        loaded_fnames.append(fname)
         trials_obj = pkl.load(open(fname, 'rb'))
         n_trials = trials_obj['n']
         trials_obj = trials_obj['trials']
-        if files == 0:
+        if len(loaded_fnames) == 0: 
             trials = trials_obj
         else:
             print("Merging trials")
             trials = merge_trials(trials, trials_obj.trials[-n_trials:])
-        files += 1
 
-    if files == 0:
+        loaded_fnames.append(fname)
+
+    print("Loaded trials", len(loaded_fnames))
+    assert len(loaded_fnames) == len(trials.trials)
+    if len(loaded_fnames) == 0:
         trials = Trials()
 
     n = NUMBER_TRIALS_PER_RUN
-    best = fmin(run_trial,
-        space=space,
-        algo=tpe.suggest,
-        max_evals=n + len(trials.trials),
-        trials=trials,
-        verbose=1,
-        rstate=np.random.RandomState(np.random.randint(1,10**6))
-        )
+    try:
+        best = fmin(run_trial,
+            space=space,
+            algo=tpe.suggest,
+            max_evals=n + len(trials.trials),
+            trials=trials,
+            verbose=1,
+            rstate=np.random.RandomState(np.random.randint(1,10**6))
+            )
+    except hyperopt.exceptions.AllTrialsFailed:
+        continue
+
     print('current best', best)
     hyperopt_trial = Trials()
 
     # Merge with empty trials dataset:
-    trials = merge_trials(hyperopt_trial, trials.trials[-n:])
-    new_fname = TRIALS_FOLDER + '/' + str(np.random.randint(0, sys.maxsize)) + '.pkl',
-    pkl.dump({'trials': trials, 'n': n}, open(new_fname, 'wb'))
+    save_trials = merge_trials(hyperopt_trial, trials.trials[-n:])
+    new_fname = TRIALS_FOLDER + '/' + str(np.random.randint(0, sys.maxsize)) + '.pkl'
+    pkl.dump({'trials': save_trials, 'n': n}, open(new_fname, 'wb'))
     loaded_fnames.append(new_fname)
+
