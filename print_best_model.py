@@ -64,6 +64,11 @@ print(files, 'trials merged')
 
 best_loss = np.inf
 best_trial = None
+try:
+    trials
+except NameError:
+    raise NameError("No trials loaded. Be sure to set the right folder")
+
 for trial in trials:
     if trial['result']['status'] == 'ok':
         loss = trial['result']['loss']
