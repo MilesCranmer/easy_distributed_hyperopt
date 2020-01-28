@@ -100,7 +100,6 @@ while True:
         loaded_fnames.append(fname)
 
     print("Loaded trials", len(loaded_fnames))
-    assert len(loaded_fnames) == len(trials.trials)
     if len(loaded_fnames) == 0:
         trials = Trials()
 
